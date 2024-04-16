@@ -1,0 +1,68 @@
+
+fn verifica_ganhar(tabuleiro: &[[char; 3]; 3]) -> Option<Jogador> {
+    // Check rows
+    for linha in tabuleiro {
+        if linha[0] != '?' && linha[0] == linha[1] && linha[1] == linha[2] {
+            return match linha[0] {
+                'X' => Some(Jogador::X),
+                'O' => Some(Jogador::O),
+                _ => None,
+            };
+        }
+    }
+
+    // Check columns
+    for coluna in 0..3 {
+        if tabuleiro[0][coluna] != '?' && tabuleiro[0][coluna] == tabuleiro[1][coluna]
+            && tabuleiro[1][coluna] == tabuleiro[2][coluna]
+        {
+            return match tabuleiro[0][coluna] {
+                'X' => Some(Jogador::X),
+                'O' => Some(Jogador::O),
+                _ => None,
+            };
+        }
+    }
+
+    // Check diagonals
+    if tabuleiro[0][0] != '?' && tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2]
+        || tabuleiro[0][2] != '?' && tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0]
+    {
+        return match tabuleiro[1][1] {
+            'X' => Some(Jogador::X),
+            'O' => Some(Jogador::O),
+            _ => None,
+        };
+    }
+
+    None // No winner yet
+}
+
+fn main() {
+    println!("\n Jogo Iniciado \n");
+
+    let mut tabuleiro = [['?' ; 3]; 3];
+    let mut jogador_atual = Jogador::X;
+
+    loop {
+        printa_tabu(tabuleiro);
+
+        if let Some(vencedor) = verifica_ganhar(&tabuleiro) {
+            match vencedor {
+                Jogador::X => println!("Jogador 1 Venceu "),
+                Jogador::O => println!("Jogador 2 Venceu"),
+            }
+            println!("\n Jogo Finalizado \n");
+            break;
+        }
+
+        if tabuleiro.iter().all(|linha| linha.iter().all(|&cel| cel != '?')) {
+            println!("Empate!");
+            println!("\nJogo Finalizado\n");
+            break;
+        }
+
+        println!("\n Jogo finalizado \n");
+    }
+}
+
