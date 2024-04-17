@@ -54,32 +54,51 @@ fn recebe_jogada(jogador: Jogador , tabuleiro: &mut [[char ; 3] ; 3]){ //matriz
     
 fn verifica_ganhar(tabuleiro: &mut [[char ; 3] ; 3]) -> Option<Jogador> {
 
-    let linhas = [0 , 1 , 2];
-    let colunas = [0 , 1 , 2];
+   // let linhas = [0 , 1 , 2];
+   // let colunas = [0 , 1 , 2];
     //testar todas as linhas, colunas e diagonais e caso dê empate
 
     //testando diagonais  
-    if tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] ==  tabuleiro[2][2] || tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0]{
+    if tabuleiro[0][0] != '?' && tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0] || tabuleiro[0][2] != '?' && tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0]{
         
-        if tabuleiro[1][1] == 'X'{ //nessa parte estava == 1
-            return Some(Jogador::X);
-        }
-        else{return Some(Jogador::O);}
+        return match tabuleiro[1][1]{
+            'X' => Some(Jogador::X),
+            'O' => Some(Jogador::O),
+            _ => None,
+        };
     }
     //linha 
-    for i in linhas{
-            if tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[1][i] == tabuleiro[2][i]{
-                if tabuleiro[i][0] == 'X' { return Some(Jogador::X);}
-                else{return Some(Jogador::O);}
+//    for i in linhas{
+//            if tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[1][i] == tabuleiro[2][i]{
+//                if tabuleiro[i][0] == 'X' { return Some(Jogador::X);}
+//                else{return Some(Jogador::O);}
 
+//        }
+//    }
+    for linha in tabuleiro{
+        if linha[0] != '?' && linha[0] == linha[1] && linha[1] == linha[2]{
+            return match linha[0]{
+                'X' => Some(Jogador::X),
+                'O' => Some(Jogador::O),
+                _ => None,
+            };
         }
     }
 
     //testando colunas 
-    for i in colunas{
-        if tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][1] == tabuleiro[2][i]{
-            if tabuleiro[0][i] == 'X' { return Some(Jogador::X);}
-            else{return Some(Jogador::O);}
+//    for i in colunas{
+//        if tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][1] == tabuleiro[2][i]{
+//            if tabuleiro[0][i] == 'X' { return Some(Jogador::X);}
+//            else{return Some(Jogador::O);}
+//        }
+//    }
+    for colunas in tabuleiro{
+        if tabuleiro[0][colunas] != '?' && tabuleiro[0][colunas] == tabuleiro[1][colunas] && tabuleiro[1][colunas] == tabuleiro[2][colunas]{
+            return match tabuleiro[0][colunas]{
+                'X' => Some(Jogador::X),
+                'O' => Some(Jogador::O),
+                _ => None,
+            };
         }
     }
 
@@ -98,7 +117,7 @@ fn main(){
     loop{
         printa_tabu(tabuleiro);
 
-        if let Some(vencedor) = verifica_ganhar(&mut tabuleiro){
+        if let Some(vencedor) = verifica_ganhar(&tabuleiro){
             match vencedor{
                 Jogador::X => println!("Jogador 1 Venceu "),
                 Jogador::O => println!("Jogador 2 Venceu"),
