@@ -20,7 +20,7 @@ fn printa_tabu(tabuleiro: [[char ; 3]; 3]){
     }
 }
 
-fn recebe_jogada(jogador: Jogador , tabuleiro: &mut [[char ; 3] ; 3]){ //matriz
+fn recebe_jogada(jogador: &Jogador , tabuleiro: &mut [[char ; 3] ; 3]){ //matriz
     //recebe a posição e verifica se a posição é válida 
        println!("Digite o valor na posição que deseja do 1 ao 9"); 
        loop{
@@ -52,14 +52,14 @@ fn recebe_jogada(jogador: Jogador , tabuleiro: &mut [[char ; 3] ; 3]){ //matriz
     }
 }
     
-fn verifica_ganhar(tabuleiro: &mut [[char ; 3] ; 3]) -> Option<Jogador> {
+fn verifica_ganhar(tabuleiro: &[[char ; 3] ; 3]) -> Option<Jogador> {
 
    // let linhas = [0 , 1 , 2];
    // let colunas = [0 , 1 , 2];
     //testar todas as linhas, colunas e diagonais e caso dê empate
 
     //testando diagonais  
-    if tabuleiro[0][0] != '?' && tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0] || tabuleiro[0][2] != '?' && tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0]{
+    if tabuleiro[0][0] != '?' && tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2] || tabuleiro[0][2] != '?' && tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0]{
         
         return match tabuleiro[1][1]{
             'X' => Some(Jogador::X),
@@ -92,7 +92,7 @@ fn verifica_ganhar(tabuleiro: &mut [[char ; 3] ; 3]) -> Option<Jogador> {
 //            else{return Some(Jogador::O);}
 //        }
 //    }
-    for colunas in tabuleiro{
+    for colunas in 0..3{
         if tabuleiro[0][colunas] != '?' && tabuleiro[0][colunas] == tabuleiro[1][colunas] && tabuleiro[1][colunas] == tabuleiro[2][colunas]{
             return match tabuleiro[0][colunas]{
                 'X' => Some(Jogador::X),
@@ -103,7 +103,7 @@ fn verifica_ganhar(tabuleiro: &mut [[char ; 3] ; 3]) -> Option<Jogador> {
     }
 
     None    
-    //empate retorna????? não sei implementar essa lógica
+    //empate retorna????? 
 }
 
 fn main(){
@@ -111,11 +111,13 @@ fn main(){
 
     // o main deve ser responsável por inicializar o jogo e fazer um loop para dar continuidade no
     let mut tabuleiro = [['?' ; 3]; 3];
-    let mut jogador_atual = Jogador::X;
+    let mut actual_player = Jogador::X;
 
    
     loop{
         printa_tabu(tabuleiro);
+
+        recebe_jogada(&actual_player , &mut tabuleiro);
 
         if let Some(vencedor) = verifica_ganhar(&tabuleiro){
             match vencedor{
@@ -125,6 +127,13 @@ fn main(){
             println!("\n Jogo Finalizado \n");
             break;
         }
+        //should be the player O that plays now!!!!
+        verifica_ganhar(&tabuleiro);
+        actual_player = match actual_player {
+            Jogador::X => Jogador::O,
+            Jogador::O => Jogador::X,
+        };
+
         //vendo um empate
         if tabuleiro.iter().all(|linha| linha.iter().all(|&cel| cel != '?')) {
             println!("Empate!");
